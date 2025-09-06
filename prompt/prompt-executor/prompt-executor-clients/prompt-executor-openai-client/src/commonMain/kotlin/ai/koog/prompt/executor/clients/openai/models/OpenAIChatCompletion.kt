@@ -227,7 +227,7 @@ public class OpenAIChatCompletionResponse(
     public val serviceTier: String? = null,
     public val systemFingerprint: String? = null,
     @SerialName("object")
-    public val objectType: String,
+    public val objectType: String? = null,
     public val usage: OpenAIUsage? = null,
 ) : OpenAIBaseLLMResponse
 
