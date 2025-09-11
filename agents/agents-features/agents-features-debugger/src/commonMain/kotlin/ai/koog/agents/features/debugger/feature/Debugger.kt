@@ -1,8 +1,8 @@
 package ai.koog.agents.features.debugger.feature
 
 import ai.koog.agents.core.agent.entity.AIAgentStorageKey
-import ai.koog.agents.core.feature.AIAgentFeature
-import ai.koog.agents.core.feature.AIAgentPipeline
+import ai.koog.agents.core.feature.AIAgentGraphFeature
+import ai.koog.agents.core.feature.AIAgentGraphPipeline
 import ai.koog.agents.core.feature.InterceptContext
 import ai.koog.agents.core.feature.model.AIAgentBeforeCloseEvent
 import ai.koog.agents.core.feature.model.AIAgentFinishedEvent
@@ -19,7 +19,6 @@ import ai.koog.agents.core.feature.model.ToolCallFailureEvent
 import ai.koog.agents.core.feature.model.ToolCallResultEvent
 import ai.koog.agents.core.feature.model.ToolValidationErrorEvent
 import ai.koog.agents.core.feature.model.toAgentError
-import ai.koog.agents.core.feature.remote.server.config.AIAgentFeatureServerConnectionConfig
 import ai.koog.agents.core.feature.remote.server.config.DefaultServerConnectionConfig
 import ai.koog.agents.core.tools.Tool
 import ai.koog.agents.core.tools.ToolArgs
@@ -53,7 +52,7 @@ public class Debugger {
      * to intercept various events and log them to a remote writer connected to a debugging server. The port for the debugger
      * server can either be explicitly set in the configuration or derived from environment variables.
      */
-    public companion object Feature : AIAgentFeature<DebuggerConfig, Debugger> {
+    public companion object Feature : AIAgentGraphFeature<DebuggerConfig, Debugger> {
 
         private val logger = KotlinLogging.logger { }
 
@@ -66,18 +65,17 @@ public class Debugger {
 
         override fun install(
             config: DebuggerConfig,
-            pipeline: AIAgentPipeline,
+            pipeline: AIAgentGraphPipeline,
         ) {
             logger.debug { "Debugger Feature. Start installing feature: ${Debugger::class.simpleName}" }
 
             // Config that will be used to connect to the debugger server where
             // port is taken from environment variables if not set explicitly
 
-            val port = config.port ?: readPortFromEnvironmentVariables() ?: DefaultServerConnectionConfig.DEFAULT_PORT
+            val port = config.port ?: readPortFromEnvironmentVariables()
             logger.debug { "Debugger Feature. Use debugger port: $port" }
 
-            val debuggerServerConfig = AIAgentFeatureServerConnectionConfig(
-                host = DefaultServerConnectionConfig.DEFAULT_HOST,
+            val debuggerServerConfig = DefaultServerConnectionConfig(
                 port = port,
                 waitConnection = true
             )
@@ -93,7 +91,6 @@ public class Debugger {
                 val event = AIAgentStartedEvent(
                     agentId = eventContext.agent.id,
                     runId = eventContext.runId,
-                    strategyName = eventContext.strategy.name,
                 )
                 writer.processMessage(event)
             }
