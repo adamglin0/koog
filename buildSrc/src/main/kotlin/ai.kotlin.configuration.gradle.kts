@@ -29,6 +29,7 @@ extensions.getByType<KotlinProjectExtension>().apply {
             optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
             // K/JS
             optIn("kotlin.js.ExperimentalJsExport")
+            optIn("kotlin.time.ExperimentalTime")
         }
 
         /*
