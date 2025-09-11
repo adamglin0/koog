@@ -344,7 +344,7 @@ class TextTest {
 
         val actual = text { file(file, parent) }
 
-        assertEquals("path/with\\mixed/separators/test.txt (<0.1 KiB)", actual)
+        assertEquals("path/with/mixed/separators/test.txt (<0.1 KiB)", actual)
     }
 
     @Test
@@ -364,7 +364,7 @@ class TextTest {
 
         val actual = text { folder(folder, parent) }
 
-        assertEquals("path/with\\mixed/separators/", actual)
+        assertEquals("path/with/mixed/separators/", actual)
     }
 
     @Test
@@ -592,34 +592,26 @@ class TextTest {
     }
 
     @Test
-    fun `entry - delegates to file for file entries`() {
+    fun `file - preserves newlines in text content`() {
         val file = FileSystemEntry.File(
-            name = "test.kt",
-            extension = "kt",
-            path = "/test.kt",
+            name = "multiline.txt",
+            extension = "txt",
+            path = "/multiline.txt",
             hidden = false,
             size = listOf(FileSize.Bytes(100)),
             contentType = FileMetadata.FileContentType.Text,
-            content = FileSystemEntry.File.Content.None
+            content = FileSystemEntry.File.Content.Text("line1\nline2\nline3")
         )
 
-        val actual = text { entry(file) }
+        val actual = text { file(file) }
 
-        assertEquals("/test.kt (<0.1 KiB)", actual)
-    }
+        val expected = listOf(
+            "/multiline.txt (<0.1 KiB)",
+            "Content:",
+            "line1\nline2\nline3"
+        ).joinToString("\n")
 
-    @Test
-    fun `entry - delegates to folder for folder entries`() {
-        val folder = FileSystemEntry.Folder(
-            name = "src",
-            path = "/src",
-            hidden = false,
-            entries = emptyList()
-        )
-
-        val actual = text { entry(folder) }
-
-        assertEquals("/src/", actual)
+        assertEquals(expected, actual)
     }
 
     @Test
@@ -866,25 +858,33 @@ class TextTest {
     }
 
     @Test
-    fun `file - preserves newlines in text content`() {
+    fun `entry - delegates to file for file entries`() {
         val file = FileSystemEntry.File(
-            name = "multiline.txt",
-            extension = "txt",
-            path = "/multiline.txt",
+            name = "test.kt",
+            extension = "kt",
+            path = "/test.kt",
             hidden = false,
             size = listOf(FileSize.Bytes(100)),
             contentType = FileMetadata.FileContentType.Text,
-            content = FileSystemEntry.File.Content.Text("line1\nline2\nline3")
+            content = FileSystemEntry.File.Content.None
         )
 
-        val actual = text { file(file) }
+        val actual = text { entry(file) }
 
-        val expected = listOf(
-            "/multiline.txt (<0.1 KiB)",
-            "Content:",
-            "line1\nline2\nline3"
-        ).joinToString("\n")
+        assertEquals("/test.kt (<0.1 KiB)", actual)
+    }
 
-        assertEquals(expected, actual)
+    @Test
+    fun `entry - delegates to folder for folder entries`() {
+        val folder = FileSystemEntry.Folder(
+            name = "src",
+            path = "/src",
+            hidden = false,
+            entries = emptyList()
+        )
+
+        val actual = text { entry(folder) }
+
+        assertEquals("/src/", actual)
     }
 }

@@ -9,11 +9,13 @@ plugins {
 
 val excluded = setOf(
     ":agents:agents-test",
+    ":agents:agents-features:agents-features-sql", // Optional SQL persistence provider
     ":examples",
     ":integration-tests",
     ":test-utils",
     ":koog-spring-boot-starter",
     ":koog-ktor",
+    ":koog-cli",
     ":docs",
     project.path, // the current project should not depend on itself
 )
