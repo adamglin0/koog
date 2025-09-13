@@ -10,8 +10,8 @@ import ai.koog.prompt.dsl.prompt
 import ai.koog.prompt.executor.model.PromptExecutor
 import ai.koog.prompt.llm.LLModel
 import ai.koog.prompt.params.LLMParams
-import kotlin.time.Clock
 import kotlin.reflect.typeOf
+import kotlin.time.Clock
 
 /**
  * Represents a basic interface for AI agent.
