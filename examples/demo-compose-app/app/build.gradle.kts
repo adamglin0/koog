@@ -22,11 +22,6 @@ kotlin {
     jvm()
 
     sourceSets {
-        all {
-            languageSettings {
-                optIn("kotlin.time.ExperimentalTime")
-            }
-        }
         commonMain.dependencies {
             implementation(compose.animation)
             implementation(compose.animationGraphics)
